@@ -1,0 +1,52 @@
+package com.odyssey.Ayurveda_Management.controller;
+
+import com.odyssey.Ayurveda_Management.model.Patient;
+import com.odyssey.Ayurveda_Management.service.PatientService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@Controller
+@RequestMapping("/patient")
+public class PatientController {
+
+    @Autowired
+    private PatientService patientService;
+
+    @GetMapping("/list")
+    public String getAllPatients(Model theModel) {
+        List<Patient> thePatient = patientService.findAll();
+        theModel.addAttribute("patient", thePatient);
+        return "patient-list";
+    }
+
+    @GetMapping("/showFormForAdd")
+    public String showFormForAdd(Model theModel) {
+        Patient thePatient = new Patient();
+        theModel.addAttribute("patient", thePatient);
+        return "patient-form";
+    }
+
+    @GetMapping("/showFormForUpdate")
+    public String showFormForUpdate(@RequestParam("patientId") Long theId, Model theModel) {
+        Patient thePatient = patientService.findById(theId);
+        theModel.addAttribute("patient", thePatient);
+        return "patient-form";
+    }
+
+    @PostMapping("/save")
+    public String saveTask(@ModelAttribute("patient") Patient thePatient) {
+        patientService.save(thePatient);
+        return "redirect:/patient/list";
+    }
+
+    @GetMapping("/delete")
+    public String delete(@RequestParam("patientId") Long theId) {
+        patientService.deleteById(theId);
+        return "redirect:/patient/list";
+    }
+
+}
