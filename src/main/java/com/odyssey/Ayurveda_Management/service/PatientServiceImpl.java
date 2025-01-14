@@ -24,7 +24,7 @@ public class PatientServiceImpl implements PatientService{
     }
 
     @Override
-    public Patient findById(Long theId) {
+    public Patient findById(int theId) {
         Optional<Patient> result = patientRepository.findById(theId);
 
         Patient thePatient = null;
@@ -43,7 +43,7 @@ public class PatientServiceImpl implements PatientService{
     }
 
     @Override
-    public void deleteById(Long theId) {
+    public void deleteById(int theId) {
         patientRepository.deleteById(theId);
     }
 

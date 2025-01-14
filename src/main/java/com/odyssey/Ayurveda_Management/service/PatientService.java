@@ -10,10 +10,10 @@ public interface PatientService {
 
     List<Patient> findAll();
 
-    Patient findById(Long theId);
+    Patient findById(int theId);
 
     void save(Patient thePatient);
 
-    void deleteById(Long theId);
+    void deleteById(int theId);
 
 }

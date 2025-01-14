@@ -3,6 +3,8 @@ package com.odyssey.Ayurveda_Management.controller;
 import com.odyssey.Ayurveda_Management.model.Patient;
 import com.odyssey.Ayurveda_Management.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +20,10 @@ public class PatientController {
 
     @GetMapping("/list")
     public String getAllPatients(Model theModel) {
-        List<Patient> thePatient = patientService.findAll();
-        theModel.addAttribute("patient", thePatient);
+        List<Patient> thePatients = patientService.findAll();
+        theModel.addAttribute("patients", thePatients);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("Authenticated user roles: " + authentication.getAuthorities());
         return "patient-list";
     }
 
@@ -31,7 +35,7 @@ public class PatientController {
     }
 
     @GetMapping("/showFormForUpdate")
-    public String showFormForUpdate(@RequestParam("patientId") Long theId, Model theModel) {
+    public String showFormForUpdate(@RequestParam("patientId") int theId, Model theModel) {
         Patient thePatient = patientService.findById(theId);
         theModel.addAttribute("patient", thePatient);
         return "patient-form";
@@ -44,7 +48,7 @@ public class PatientController {
     }
 
     @GetMapping("/delete")
-    public String delete(@RequestParam("patientId") Long theId) {
+    public String delete(@RequestParam("patientId") int theId) {
         patientService.deleteById(theId);
         return "redirect:/patient/list";
     }

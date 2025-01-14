@@ -11,7 +11,7 @@ public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private int id;
 
     @Column(name = "name")
     private String name;
@@ -32,8 +32,11 @@ public class Patient {
     @Column(name = "address")
     private String address;
 
+    @Column(name = "medical_history")
+    private String medicalHistory;
+
     @Column(name = "registration_date")
-    private LocalDate registrationDate;
+    private String registrationDate;
 
     @Column(name = "notes")
     private String notes;
@@ -44,8 +47,8 @@ public class Patient {
 
     }
 
-    public Patient(Long id, String name, int age, Gender gender, String contactNumber, String email,
-                   String address, LocalDate registrationDate, String notes) {
+    public Patient(int id, String name, int age, Gender gender, String contactNumber, String email,
+                   String address, String medicalHistory, String registrationDate, String notes) {
         this.id = id;
         this.name = name;
         this.age = age;
@@ -53,26 +56,30 @@ public class Patient {
         this.contactNumber = contactNumber;
         this.email = email;
         this.address = address;
+        this.medicalHistory = medicalHistory;
         this.registrationDate = registrationDate;
         this.notes = notes;
     }
 
-    public Patient(String name, int age, Gender gender, String contactNumber, String email, String address) {
+    public Patient(String name, int age, Gender gender, String contactNumber, String email, String address,
+                   String registrationDate) {
         this.name = name;
         this.age = age;
         this.gender = gender;
         this.contactNumber = contactNumber;
         this.email = email;
         this.address = address;
+        this.registrationDate = registrationDate; // Default registration date
     }
+
 
 
     // getters & Setters
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -124,11 +131,11 @@ public class Patient {
         this.address = address;
     }
 
-    public LocalDate getRegistrationDate() {
+    public String getRegistrationDate() {
         return registrationDate;
     }
 
-    public void setRegistrationDate(LocalDate registrationDate) {
+    public void setRegistrationDate(String registrationDate) {
         this.registrationDate = registrationDate;
     }
 
@@ -140,8 +147,17 @@ public class Patient {
         this.notes = notes;
     }
 
+    public String getMedicalHistory() {
+        return medicalHistory;
+    }
+
+    public void setMedicalHistory(String medicalHistory) {
+        this.medicalHistory = medicalHistory;
+    }
 
     // toString
+
+
     @Override
     public String toString() {
         return "Patient{" +
@@ -152,9 +168,9 @@ public class Patient {
                 ", contactNumber='" + contactNumber + '\'' +
                 ", email='" + email + '\'' +
                 ", address='" + address + '\'' +
+                ", medicalHistory='" + medicalHistory + '\'' +
                 ", registrationDate=" + registrationDate +
                 ", notes='" + notes + '\'' +
                 '}';
     }
-
 }
