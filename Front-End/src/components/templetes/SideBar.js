@@ -8,8 +8,8 @@ const Sidebar = () => {
     <div className="sidebar">
       <h2>Dashboard</h2>
       <ul>
-        <li><a href="#dashboard"><img src={Dashboard} alt="Dashboard" style={{ width: '25px', marginRight: '10px' }} /><span>Dashboard</span></a></li>
-        <li><a href="#patients"><img src={Patients} alt="Patients" style={{ width: '25px', marginRight: '10px' }} /><span>Patients</span></a></li>
+        <li><a href="admin-Dashboard"><img src={Dashboard} alt="Dashboard" style={{ width: '25px', marginRight: '10px' }} /><span>Dashboard</span></a></li>
+        <li><a href="Patient-page"><img src={Patients} alt="Patients" style={{ width: '25px', marginRight: '10px' }} /><span>Patients</span></a></li>
       </ul>
     </div>
   );

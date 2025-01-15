@@ -1,181 +1,157 @@
-import React, { useState } from 'react';
-import Navbar from '../../components/templetes/Navbar';
-import Sidebar from '../../components/templetes/SideBar';
-import '@fortawesome/fontawesome-free/css/all.min.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min';
-import '../../css/admin/AdminDashboard.css';
+import React, { useState } from "react";
+import Navbar from "../../components/templetes/Navbar"; 
+import Sidebar from "../../components/templetes/SideBar"; 
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min";
+import "../../css/admin/AdminDashboard.css"; 
 
-function AdminDashboard() {
-  const [showModal, setShowModal] = useState(false);
+const DashboardPage = () => {
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-  const toggleModal = () => {
-    setShowModal(!showModal);
+  // Open the popup
+  const openPopup = () => {
+    setIsPopupOpen(true);
   };
 
-  // Mock data for the table
-  const tableData = [
-    { no: 1, name: 'RK', disease: 'Diabetes', time: 'January 15, 2025', source: '$50.00' },
-    { no: 2, name: 'RR', disease: 'Diabetes', time: 'January 15, 2025', source: '$60.00' },
-    { no: 3, name: 'RR', disease: 'Diabetes', time: 'January 15, 2025', source: '$60.00' },
-    { no: 4, name: 'RR', disease: 'Diabetes', time: 'January 15, 2025', source: '$60.00' },
-    { no: 5, name: 'RR', disease: 'Diabetes', time: 'January 15, 2025', source: '$60.00' },
-    { no: 6, name: 'RR', disease: 'Diabetes', time: 'January 15, 2025', source: '$60.00' },
-  ];
+  // Close the popup
+  const closePopup = () => {
+    setIsPopupOpen(false);
+  };
 
   return (
-    <div className="d-flex flex-column" style={{ minHeight: '100vh' }}>
+    <div className="dashboard-container">
       <Navbar />
-      <div className="flex-grow-1 d-flex">
-        <Sidebar />
-        <main className="content-container p-4">
-          <div className="dashboard-header">
-            <div className="stats-card">
-              <div className="stats-icon">
-                <i className="fas fa-users"></i> {/* Icon for "Today Patients" */}
-              </div>
-              <div className="stats-data">
-                <div>
-                  <h4>Today Patients</h4>
-                  <p>50</p>
-                </div>
+      <div className="content">
+        <div className="top-section">
+          <div className="summary-cards">
+            <div className="card">
+              <i className="fas fa-users card-icon"></i>
+              <div>
+                <h3>Today Patients</h3>
+                <p>50</p>
               </div>
             </div>
-            <div className="stats-card">
-              <div className="stats-icon">
-                <i className="fas fa-money-bill-alt"></i> {/* Icon for "Today Payments" */}
-              </div>
-              <div className="stats-data">
-                <div>
-                  <h4>Today Payments</h4>
-                  <p>2000</p>
-                </div>
+            <div className="card">
+              <i className="fas fa-dollar-sign card-icon"></i>
+              <div>
+                <h3>Today Payments</h3>
+                <p>2000</p>
               </div>
             </div>
+          </div>
+          <div className="actions-container">
             <div className="search-container">
-              <input type="text" placeholder="Search" />
-              <button className="search-btn">
-                <i className="fas fa-search"></i>
-              </button>
+              <input type="text" placeholder="Search" className="search-bar" />
+              <i className="fas fa-search search-icon"></i>
             </div>
+            <button className="add-patient-btn" onClick={openPopup}>
+              <i className="fas fa-user-plus"></i> Add New Patient
+            </button>
           </div>
-
-          <button className="add-patient-btn" onClick={toggleModal}>
-            + Add New Patient
-          </button>
-
-          <div className="table-container mt-4">
-            <h5>Daily Patients: 07/01/2025</h5>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>No</th>
-                  <th>Name</th>
-                  <th>Disease</th>
-                  <th>Time</th>
-                  <th>Medicine Source</th>
-                </tr>
-              </thead>
-              <tbody>
-                {tableData.map((row) => (
-                  <tr key={row.no}>
-                    <td>{row.no}</td>
-                    <td>{row.name}</td>
-                    <td>{row.disease}</td>
-                    <td>{row.time}</td>
-                    <td>{row.source}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* New Patient Form Section */}
-          <div className="patient-form-container">
-            <form className="patient-form">
-              <div className="form-group">
-                <label>Patient ID</label>
-                <input type="text" placeholder="Enter Patient ID" />
-              </div>
-              <div className="form-group">
-                <label>Name</label>
-                <input type="text" placeholder="Enter Name" />
-              </div>
-              <div className="form-group">
-                <label>Phone Number</label>
-                <input type="text" placeholder="Enter Phone Number" />
-              </div>
-              <div className="form-group">
-                <label>Age</label>
-                <input type="number" placeholder="Enter Age" />
-              </div>
-              <div className="form-group">
-                <label>Disease</label>
-                <input type="text" placeholder="Enter Disease" />
-              </div>
-              <div className="form-group">
-                <label>Medicine</label>
-                <input type="text" placeholder="Enter Medicine" />
-              </div>
-              <div className="form-group">
-                <label>Therapy</label>
-                <input type="text" placeholder="Enter Therapy" />
-              </div>
-              <div className="form-group">
-                <label>Amount</label>
-                <input type="text" placeholder="Enter Amount" />
-              </div>
-              <button type="submit" className="submit-btn">Submit</button>
-            </form>
-          </div>
-
-          {/* Modal for Patient Registration */}
-          {showModal && (
-            <div className="modal-overlay" onClick={toggleModal}>
-              <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                <h2>Patient Registration</h2>
-                <form className="patient-form">
-                  <div className="form-group">
-                    <label>Patient ID</label>
-                    <input type="text" placeholder="Enter Patient ID" />
+        </div>
+        <div className="main-content">
+          <Sidebar />
+          <div className="dashboard-content">
+            <div className="layout-container">
+              {/* Right Side: Form */}
+              <div className="form-container">
+                <form>
+                  <input type="text" placeholder="Patient ID" />
+                  <input type="text" placeholder="Name" />
+                  <input type="number" placeholder="Phone Number" />
+                  <input type="number" placeholder="Age" />
+                  <input type="text" placeholder="Disease" />
+                  <input type="text" placeholder="Medicine" />
+                  <input type="text" placeholder="Therapy" />
+                  <input type="number" placeholder="Amount" />
+                  <div className="form-buttons">
+                    <button type="submit" className="submit-btn">
+                      Submit
+                    </button>
                   </div>
-                  <div className="form-group">
-                    <label>Name</label>
-                    <input type="text" placeholder="Enter Name" />
-                  </div>
-                  <div className="form-group">
-                    <label>Age</label>
-                    <input type="text" placeholder="Enter Age" />
-                  </div>
-                  <div className="form-group">
-                    <label>Gender</label>
-                    <input type="number" placeholder="Enter Gender" />
-                  </div>
-                  <div className="form-group">
-                    <label>Phone Number</label>
-                    <input type="text" placeholder="Enter Phone Number" />
-                  </div>
-                  <div className="form-group">
-                    <label>Email</label>
-                    <input type="text" placeholder="Enter Email" />
-                  </div>
-                  <div className="form-group">
-                    <label>Address</label>
-                    <input type="text" placeholder="Enter Address" />
-                  </div>
-                  <div className="form-group">
-                    <label>Registration Date</label>
-                    <input type="date" className="form-control" />
-                  </div>
-                  <button type="submit" className="submit-btn">Submit</button>
                 </form>
               </div>
+
+              {/* Left Side: Patients Table */}
+              <div className="patients-table">
+                <h4>Daily Patients: 07/01/2025</h4>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>No</th>
+                      <th>Name</th>
+                      <th>Disease</th>
+                      <th>Time</th>
+                      <th>Medicine Amounts</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[...Array(14)].map((_, i) => (
+                      <tr key={i}>
+                        <td>{i + 1}</td>
+                        <td>Name {i + 1}</td>
+                        <td>Diabetes</td>
+                        <td>January 15, 2025</td>
+                        <td>Paracetamol - ${5 + i}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {/* Popup */}
+              {isPopupOpen && (
+                <div className="popup-overlay" onClick={closePopup}>
+                  <div
+                    className="popup-content"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <h3>Patient Registration</h3>
+                    <form className="popup-form">
+                      <div className="form-group">
+                        <input type="number" placeholder=" Patient ID" />
+                      </div>
+                      <div className="form-group">
+                        <input type="text" placeholder=" Name" />
+                      </div>
+                      <div className="form-group">
+                        <input type="number" placeholder="Age" />
+                      </div>
+                      <div className="form-group">
+                        <select defaultValue="">
+                          <option value="" disabled>
+                            Gender
+                          </option>
+                          <option value="male">Male</option>
+                          <option value="female">Female</option>
+                          <option value="others">Others</option>
+                        </select>
+                      </div>
+                      <div className="form-group">
+                        <input type="number" placeholder="Phone Number" />
+                      </div>
+                      <div className="form-group">
+                        <input type="email" placeholder="Enter Email" />
+                      </div>
+                      <div className="form-group">
+                        <textarea placeholder="Address"></textarea>
+                      </div>
+                      <div className="form-group">
+                        <input type="date" />
+                      </div>
+                      <button type="submit" className="register-btn">
+                        Register
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              )}
             </div>
-          )}
-        </main>
+          </div>
+        </div>
       </div>
     </div>
   );
-}
+};
 
-export default AdminDashboard;
+export default DashboardPage;
