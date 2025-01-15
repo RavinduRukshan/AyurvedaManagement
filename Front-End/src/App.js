@@ -5,6 +5,8 @@ import SigninPage from './page/signinPage';
 import AdminDashboard from './page/admin/adminDashboardPage';
 import PatientsPage from './page/admin/PatientPage';
 import PatientViewPage from './page/admin/PatientViewPage';
+import UsersPage from './page/admin/UsersPage';
+
 function App() {
   return (
     <Router>
@@ -15,8 +17,9 @@ function App() {
 
         {/* Admin-Side Routes */}
         <Route path="/admin-Dashboard" element={<AdminDashboard/>} />
-        <Route path="/Patient-page" element={<PatientsPage/>} />
-        <Route path="/PatientView-page" element={<PatientViewPage/>} />
+        <Route path="/patient-page" element={<PatientsPage/>} />
+        <Route path="/patientView-page" element={<PatientViewPage/>} />
+        <Route path="/users-page" element={<UsersPage/>} />
 
 
       </Routes>
