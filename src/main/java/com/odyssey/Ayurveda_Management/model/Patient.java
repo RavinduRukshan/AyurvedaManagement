@@ -23,6 +23,7 @@ public class Patient {
     @Column(name = "gender")
     private Gender gender;
 
+
     @Column(name = "contact_number")
     private String contactNumber;
 

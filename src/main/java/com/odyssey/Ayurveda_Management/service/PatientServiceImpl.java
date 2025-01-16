@@ -2,6 +2,7 @@ package com.odyssey.Ayurveda_Management.service;
 
 import com.odyssey.Ayurveda_Management.model.Patient;
 import com.odyssey.Ayurveda_Management.repository.PatientRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,8 @@ public class PatientServiceImpl implements PatientService{
     public PatientServiceImpl(PatientRepository thePatientRepository) {
         patientRepository = thePatientRepository;
     }
+
+
 
     @Override
     public List<Patient> findAll() {
