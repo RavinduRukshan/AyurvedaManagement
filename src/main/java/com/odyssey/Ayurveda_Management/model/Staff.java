@@ -1,5 +1,6 @@
 package com.odyssey.Ayurveda_Management.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -16,6 +17,7 @@ public class Staff {
 
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
+//    @JsonIgnore
     private Role role;
 
     @Column(name = "contact_number")

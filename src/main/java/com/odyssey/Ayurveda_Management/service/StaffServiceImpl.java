@@ -45,4 +45,12 @@ public class StaffServiceImpl implements StaffService{
     public void deleteById(int theId) {
         staffRepository.deleteById(theId);
     }
+
+    @Override
+    public List<Staff> findByNameContainingIgnoreCase(String name) {
+        return staffRepository.findByNameContainingIgnoreCase(name);
+    }
+
+
+
 }

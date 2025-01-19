@@ -24,6 +24,12 @@ public class Dispensary {
     private String openingHours;
 
 
+    // Constructor that accepts an ID
+    public Dispensary(Integer id) {
+        this.id = id;
+    }
+
+
     // Constructors
     public Dispensary() {
 
