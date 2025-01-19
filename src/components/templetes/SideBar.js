@@ -11,6 +11,7 @@ const Sidebar = () => {
         <li><a href="admin-Dashboard"><img src={Dashboard} alt="Dashboard" style={{ width: '25px', marginRight: '10px' }} /><span>Dashboard</span></a></li>
         <li><a href="Patient-page"><img src={Patients} alt="Patients" style={{ width: '25px', marginRight: '10px' }} /><span>Patients</span></a></li>
         <li><a href="users-page"><img src={Patients} alt="Users" style={{ width: '25px', marginRight: '10px' }} /><span>Users</span></a></li>
+        <li><a href="staff-page"><img src={Patients} alt="Users" style={{ width: '25px', marginRight: '10px' }} /><span>Staff</span></a></li>
       </ul>
     </div>
   );

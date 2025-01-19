@@ -173,9 +173,9 @@ const PatientsPage = () => {
     <div className="patients-page-container">
       <Navbar />
       <div className="patients-content">
-        <div className="breadcrumbs">
+        {/* <div className="breadcrumbs">
           <span>Home</span> / <span>Patients</span>
-        </div>
+        </div> */}
         <div className="patients-top-section">
           <div className="patients-actions-container">
             <div className="patients-search-container">
@@ -233,14 +233,15 @@ const PatientsPage = () => {
         </div>
       </div>
 
-      {/* Delete Confirmation Popup */}
+    
+      {/* Delete confirmation popup */}
       {isDeleteConfirmationOpen && (
-        <div className="patients-popup-overlay" onClick={cancelDelete}>
-          <div className="patients-popup-content" onClick={(e) => e.stopPropagation()}>
-            <h3>Are you sure you want to delete this patient?</h3>
+        <div className="patients-popup-overlay-delete" >
+          <div className="patients-popup-content-delete" onClick={(e) => e.stopPropagation()}>
+            <h3 className="delete-text">Are you sure you want to delete this?</h3>
             <div className="confirmation-buttons">
-              <button className="btn-confirm" onClick={handleDelete}>Yes, Delete</button>
-              <button className="btn-cancel" onClick={cancelDelete}>Cancel</button>
+              <button  className="btn-action btn-view" onClick={handleDelete}>Yes, Delete</button>
+              <button  className="btn-action btn-delete" onClick={cancelDelete}>Cancel</button>
             </div>
           </div>
         </div>
@@ -248,7 +249,7 @@ const PatientsPage = () => {
 
       {/* Create Patient Popup */}
       {isCreatePopupOpen && (
-        <div className="patients-popup-overlay" onClick={closePopup}>
+        <div className="patients-popup-overlay" >
           <div className="patients-popup-content" onClick={(e) => e.stopPropagation()}>
             <h3>Patient Registration</h3>
             {error && <div className="error-message">{error}</div>}
@@ -325,8 +326,12 @@ const PatientsPage = () => {
                 placeholder="Notes"
               ></textarea>
               <button type="submit" className="patients-register-btn">
-                Register Patient
+                Register
               </button>
+              <button type="submit" onClick={closePopup} className="patient-close-btn">
+                Close
+              </button>
+              
             </form>
           </div>
         </div>
@@ -334,7 +339,7 @@ const PatientsPage = () => {
 
       {/* Update Patient Popup */}
       {isUpdatePopupOpen && (
-        <div className="patients-popup-overlay" onClick={closePopup}>
+        <div className="patients-popup-overlay" >
           <div className="patients-popup-content" onClick={(e) => e.stopPropagation()}>
             <h3>Update Patient</h3>
             {error && <div className="error-message">{error}</div>}
@@ -411,7 +416,10 @@ const PatientsPage = () => {
                 placeholder="Notes"
               ></textarea>
               <button type="submit" className="patients-register-btn">
-                Update Patient
+                Update
+              </button>
+              <button type="submit" onClick={closePopup} className="patient-close-btn">
+                Close
               </button>
             </form>
           </div>

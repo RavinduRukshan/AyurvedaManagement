@@ -6,6 +6,8 @@ import AdminDashboard from './page/admin/adminDashboardPage';
 import PatientsPage from './page/admin/PatientPage';
 import PatientViewPage from './page/admin/PatientViewPage';
 import UsersPage from './page/admin/UsersPage';
+import Staffpage from './page/admin/Staffpage';
+
 
 function App() {
   return (
@@ -16,10 +18,12 @@ function App() {
         <Route path="/login" element={<SigninPage/>} />
 
         {/* Admin-Side Routes */}
-        <Route path="/admin-Dashboard" element={<AdminDashboard/>} />
+        <Route path="/admin-dashboard" element={<AdminDashboard/>} />
         <Route path="/patient-page" element={<PatientsPage/>} />
-        <Route path="/patientView-page" element={<PatientViewPage/>} />
+        <Route path="/patient-view-page" element={<PatientViewPage/>} />
         <Route path="/users-page" element={<UsersPage/>} />
+        <Route path="/staff-page" element={<Staffpage/>} />
+    
 
 
       </Routes>
