@@ -1,151 +1,235 @@
-import React, { useState } from "react";
-import Navbar from "../../components/templetes/Navbar"; 
-import Sidebar from "../../components/templetes/SideBar"; 
+import React, { useState, useEffect } from "react";
+import Navbar from "../../components/templetes/Navbar";
+import Sidebar from "../../components/templetes/SideBar";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
-import "../../css/admin/AdminDashboard.css"; 
+import "../../css/admin/AdminDashboard.css";
+import axios from "axios";
 
 const DashboardPage = () => {
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [patients, setPatients] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredPatients, setFilteredPatients] = useState([]);
+  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [formData, setFormData] = useState({
+    sicknessDescription: "",
+    medicinePrescribed: "",
+    therapyGiven: "",
+    treatmentDate: "",
+    treatmentTime: "",
+    progressNotes: "",
+    treatmentAmount: "",
+  });
+  const [submittedData, setSubmittedData] = useState([]);
 
-  // Open the popup
-  const openPopup = () => {
-    setIsPopupOpen(true);
+  // Fetch patients and treatment records
+  useEffect(() => {
+    const fetchPatients = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/patient/list");
+        setPatients(response.data);
+      } catch (error) {
+        console.error("Error fetching patients:", error);
+      }
+    };
+
+    const fetchSubmittedData = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/api/treatment-records/");
+        setSubmittedData(response.data);
+      } catch (error) {
+        console.error("Error fetching treatment records:", error);
+      }
+    };
+
+    fetchPatients();
+    fetchSubmittedData();
+  }, []);
+
+  // Filter patients by search term
+  useEffect(() => {
+    if (searchTerm) {
+      const results = patients.filter(
+        (patient) =>
+          patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          patient.contactNumber.includes(searchTerm)
+      );
+      setFilteredPatients(results);
+    } else {
+      setFilteredPatients([]);
+    }
+  }, [searchTerm, patients]);
+
+  // Handle input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
 
-  // Close the popup
-  const closePopup = () => {
-    setIsPopupOpen(false);
+  // Handle form submission
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!selectedPatient) {
+      alert("Please select a patient from the list.");
+      return;
+    }
+
+    const recordToSubmit = {
+      ...formData,
+      patientId: selectedPatient.id,
+    };
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/treatment-records/add",
+        recordToSubmit
+      );
+      // Update the table with the newly created record
+      setSubmittedData((prevData) => [...prevData, response.data]);
+
+      // Reset the form
+      setFormData({
+        sicknessDescription: "",
+        medicinePrescribed: "",
+        therapyGiven: "",
+        treatmentDate: "",
+        treatmentTime: "",
+        progressNotes: "",
+        treatmentAmount: "",
+      });
+      setSearchTerm("");
+      setSelectedPatient(null);
+    } catch (error) {
+      console.error("Error submitting treatment record:", error);
+    }
+  };
+
+  // Handle dropdown selection
+  const handleDropdownClick = (patient) => {
+    setSelectedPatient(patient);
+    setSearchTerm(`${patient.name} (${patient.contactNumber})`);
+    setFilteredPatients([]);
   };
 
   return (
     <div className="dashboard-container">
       <Navbar />
       <div className="content">
-        <div className="top-section">
-          <div className="summary-cards">
-            <div className="card">
-              <i className="fas fa-users card-icon"></i>
-              <div>
-                <h3>Today Patients</h3>
-                <p>50</p>
-              </div>
-            </div>
-            <div className="card">
-              <i className="fas fa-dollar-sign card-icon"></i>
-              <div>
-                <h3>Today Payments</h3>
-                <p>2000</p>
-              </div>
-            </div>
-          </div>
-          <div className="actions-container">
-            <div className="search-container">
-              <input type="text" placeholder="Search" className="search-bar" />
-              <i className="fas fa-search search-icon"></i>
-            </div>
-            <button className="add-patient-btn" onClick={openPopup}>
-              <i className="fas fa-user-plus"></i> Add New Patient
-            </button>
-          </div>
-        </div>
-        <div className="main-content">
-          <Sidebar />
-          <div className="dashboard-content">
-            <div className="layout-container">
-              {/* Right Side: Form */}
-              <div className="form-container">
-                <form>
-                  <input type="text" placeholder="Patient ID" />
-                  <input type="text" placeholder="Name" />
-                  <input type="number" placeholder="Phone Number" />
-                  <input type="number" placeholder="Age" />
-                  <input type="text" placeholder="Disease" />
-                  <input type="text" placeholder="Medicine" />
-                  <input type="text" placeholder="Therapy" />
-                  <input type="number" placeholder="Amount" />
-                  <div className="form-buttons">
-                    <button type="submit" className="submit-btn">
-                      Submit
-                    </button>
-                  </div>
-                </form>
-              </div>
-
-              {/* Left Side: Patients Table */}
-              <div className="patients-table">
-                <h4>Daily Patients: 07/01/2025</h4>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>No</th>
-                      <th>Name</th>
-                      <th>Disease</th>
-                      <th>Time</th>
-                      <th>Medicine Amounts</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[...Array(14)].map((_, i) => (
-                      <tr key={i}>
-                        <td>{i + 1}</td>
-                        <td>Name {i + 1}</td>
-                        <td>Diabetes</td>
-                        <td>January 15, 2025</td>
-                        <td>Paracetamol - ${5 + i}</td>
-                      </tr>
+        <Sidebar />
+        <div className="dashboard-content">
+          <div className="layout-container">
+            <div className="form-container">
+              <form onSubmit={handleFormSubmit}>
+                <h4 className="text-center mb-4">Treatment Record Form</h4>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Start typing Patient Name or Contact Number"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                {filteredPatients.length > 0 && (
+                  <ul className="dropdown-list">
+                    {filteredPatients.map((patient) => (
+                      <li
+                        key={patient.id}
+                        onClick={() => handleDropdownClick(patient)}
+                        className="dropdown-item"
+                      >
+                        {patient.name} ({patient.contactNumber})
+                      </li>
                     ))}
-                  </tbody>
-                </table>
-              </div>
-              {/* Popup */}
-              {isPopupOpen && (
-                <div className="popup-overlay" onClick={closePopup}>
-                  <div
-                    className="popup-content"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <h3>Patient Registration</h3>
-                    <form className="popup-form">
-                      <div className="form-group">
-                        <input type="number" placeholder=" Patient ID" />
-                      </div>
-                      <div className="form-group">
-                        <input type="text" placeholder=" Name" />
-                      </div>
-                      <div className="form-group">
-                        <input type="number" placeholder="Age" />
-                      </div>
-                      <div className="form-group">
-                        <select defaultValue="">
-                          <option value="" disabled>
-                            Gender
-                          </option>
-                          <option value="male">Male</option>
-                          <option value="female">Female</option>
-                          <option value="others">Others</option>
-                        </select>
-                      </div>
-                      <div className="form-group">
-                        <input type="number" placeholder="Phone Number" />
-                      </div>
-                      <div className="form-group">
-                        <input type="email" placeholder="Enter Email" />
-                      </div>
-                      <div className="form-group">
-                        <textarea placeholder="Address"></textarea>
-                      </div>
-                      <div className="form-group">
-                        <input type="date" />
-                      </div>
-                      <button type="submit" className="register-btn">
-                        Register
-                      </button>
-                    </form>
-                  </div>
-                </div>
-              )}
+                  </ul>
+                )}
+                <input
+                  type="text"
+                  name="sicknessDescription"
+                  placeholder="Sickness Description"
+                  value={formData.sicknessDescription}
+                  onChange={handleInputChange}
+                  required
+                />
+                <input
+                  type="text"
+                  name="medicinePrescribed"
+                  placeholder="Medicine Prescribed"
+                  value={formData.medicinePrescribed}
+                  onChange={handleInputChange}
+                  required
+                />
+                <input
+                  type="text"
+                  name="therapyGiven"
+                  placeholder="Therapy Given"
+                  value={formData.therapyGiven}
+                  onChange={handleInputChange}
+                  required
+                />
+                <input
+                  type="date"
+                  name="treatmentDate"
+                  value={formData.treatmentDate}
+                  onChange={handleInputChange}
+                  required
+                />
+                <input
+                  type="time"
+                  name="treatmentTime"
+                  value={formData.treatmentTime}
+                  onChange={handleInputChange}
+                  required
+                />
+                <input
+                  type="text"
+                  name="progressNotes"
+                  placeholder="Progress Notes"
+                  value={formData.progressNotes}
+                  onChange={handleInputChange}
+                  required
+                />
+                <input
+                  type="number"
+                  name="treatmentAmount"
+                  placeholder="Treatment Amount"
+                  value={formData.treatmentAmount}
+                  onChange={handleInputChange}
+                  required
+                />
+                <button type="submit" className="btn btn-primary">
+                  Submit
+                </button>
+              </form>
+            </div>
+            <div className="patients-table">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Name</th>
+                    <th>Sickness Description</th>
+                    <th>Time</th>
+                    <th>Medicine Prescribed</th>
+                    <th>Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {submittedData.map((record, index) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{record.patient?.name || "Unknown"}</td>
+                      <td>{record.sicknessDescription}</td>
+                      <td>{record.treatmentTime}</td>
+                      <td>{record.medicinePrescribed}</td>
+                      <td>{record.treatmentAmount}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
