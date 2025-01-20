@@ -72,10 +72,10 @@ public class SecurityConfig {
 
     // Password Encoder (BCrypt)
 //
-//    @Bean
-//    public BCryptPasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
 //    disable security for tempery
 
