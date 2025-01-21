@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import Navbar from "../../components/templetes/Navbar";
 import Sidebar from "../../components/templetes/SideBar";
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -7,6 +7,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import "../../css/admin/UsersPage.css";
 import axios from "axios";
+
 
 const UsersPage = () => {
   const [users, setUsers] = useState([]);
@@ -177,7 +178,6 @@ const UsersPage = () => {
       <Navbar />
       <div className="users-content">
         <div className="breadcrumbs">
-          <span>Home</span> / <span>Users</span>
         </div>
         <div className="users-top-section">
           <div className="users-actions-container">

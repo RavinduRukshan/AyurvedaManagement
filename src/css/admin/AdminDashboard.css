@@ -8,7 +8,7 @@
 
 .dashboard-content {
   flex: 1;
-  padding: 20px;
+  /* padding:20px; */
   overflow-y: auto;
 }
 
@@ -16,8 +16,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-  margin-top: 20px;
+  /* margin-bottom: 20px; */
+  margin-top: 30px;
 }
 
 .summary-cards {
@@ -111,6 +111,7 @@
   padding: 20px;
   border-radius: 10px;
   max-width: 400px;
+  margin-top: 63px;
 }
 
 .form-container h3 {
@@ -144,6 +145,7 @@
 }
 
 .patients-table {
+  /* margin-top: 0; */
   flex: 2;
 }
 
@@ -232,3 +234,87 @@
 .popup-form .register-btn:hover {
   background-color: #218838;
 }
+
+
+
+
+
+  /* Container for the staff selector ==============================*/
+  .staff-selector-container {
+    position: relative; /* Position relative for dropdown alignment */
+    width: 100%; /* Adjust width to fit the parent container */
+    max-width: 400px; /* Optional: Set a max width for input field */
+    margin: 0 auto; /* Center horizontally if needed */
+  }
+  
+  /* Styling for the input field */
+  .staff-selector-container input {
+    width: 100%; /* Full width of the container */
+    padding: 10px 12px; /* Inner spacing for input field */
+    font-size: 14px; /* Standard font size */
+    border: 1px solid #ccc; /* Light border for a clean look */
+    border-radius: 4px; /* Rounded corners for input field */
+    outline: none; /* Remove default outline on focus */
+    transition: border-color 0.3s ease; /* Smooth focus effect */
+  }
+  
+  /* Highlight the input field on focus */
+  .staff-selector-container input:focus {
+    border-color: #007bff; /* Change border color on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add subtle glow */
+  }
+  
+  /* Dropdown for staff options */
+  .staff-options {
+    position: absolute; /* Position relative to container */
+    top: 100%; /* Align directly below the input field */
+    left: 0; /* Align to the left of the container */
+    width: 100%; /* Match the width of the input field */
+    background: #fff; /* White background for dropdown */
+    border: 1px solid #ccc; /* Light border for separation */
+    border-radius: 4px; /* Rounded corners for dropdown */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    max-height: 200px; /* Limit height with scroll */
+    overflow-y: auto; /* Enable vertical scrolling for long lists */
+    z-index: 1000; /* Ensure it appears above other elements */
+    padding: 0; /* Remove default padding for ul */
+    margin-top: 5px; /* Space between input and dropdown */
+    list-style: none; /* Remove default bullet points */
+  }
+  
+  /* Individual list item in the dropdown */
+  .staff-options li {
+    padding: 10px; /* Spacing inside each item */
+    font-size: 14px; /* Standard font size */
+    cursor: pointer; /* Pointer cursor for interactivity */
+    transition: background-color 0.2s ease; /* Smooth hover effect */
+  }
+  
+  /* Hover effect for dropdown items */
+  .staff-options li:hover {
+    background-color: #f1f1f1; /* Light gray on hover */
+  }
+  
+  /* Selected staff item styling (optional, add a class when selected) */
+  .staff-options li.selected {
+    background-color: #007bff; /* Highlight color for selection */
+    color: #fff; /* White text on selected item */
+  }
+  
+
+  .patient-info-container{
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: rgb(178, 255, 204);
+
+  }
+
+  h3 {
+    margin-top: 10px;
+    margin-bottom: 15px;
+    color: #28a745;
+    text-align: center;
+  }
