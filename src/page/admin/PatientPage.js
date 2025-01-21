@@ -191,7 +191,6 @@ const PatientsPage = () => {
             </button>
           </div>
         </div>
-
         <div className="patients-main-content">
           <Sidebar />
           <div className="patients-table-container">
@@ -232,7 +231,6 @@ const PatientsPage = () => {
           </div>
         </div>
       </div>
-
       {/* Delete Confirmation Popup */}
       {isDeleteConfirmationOpen && (
         <div className="patients-popup-overlay" onClick={cancelDelete}>
@@ -245,7 +243,6 @@ const PatientsPage = () => {
           </div>
         </div>
       )}
-
       {/* Create Patient Popup */}
       {isCreatePopupOpen && (
         <div className="patients-popup-overlay" onClick={closePopup}>
@@ -331,7 +328,6 @@ const PatientsPage = () => {
           </div>
         </div>
       )}
-
       {/* Update Patient Popup */}
       {isUpdatePopupOpen && (
         <div className="patients-popup-overlay" onClick={closePopup}>

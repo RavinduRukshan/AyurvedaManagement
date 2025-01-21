@@ -9,9 +9,8 @@ import axios from "axios";
 
 const DashboardPage = () => {
   const [patients, setPatients] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filteredPatients, setFilteredPatients] = useState([]);
-  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [selectedPatient, setSelectedPatient] = useState(null); // Store the selected patient object
+  const [treatmentRecords, setTreatmentRecords] = useState([]);
   const [formData, setFormData] = useState({
     sicknessDescription: "",
     medicinePrescribed: "",
@@ -21,78 +20,70 @@ const DashboardPage = () => {
     progressNotes: "",
     treatmentAmount: "",
   });
-  const [submittedData, setSubmittedData] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [editRecordId, setEditRecordId] = useState(null);
 
-  // Fetch patients and treatment records
   useEffect(() => {
-    const fetchPatients = async () => {
-      try {
-        const response = await axios.get("http://localhost:8080/patient/list");
-        setPatients(response.data);
-      } catch (error) {
-        console.error("Error fetching patients:", error);
-      }
-    };
-
-    const fetchSubmittedData = async () => {
-      try {
-        const response = await axios.get("http://localhost:8080/api/treatment-records/");
-        setSubmittedData(response.data);
-      } catch (error) {
-        console.error("Error fetching treatment records:", error);
-      }
-    };
-
-    fetchPatients();
-    fetchSubmittedData();
+    fetchTreatmentRecords();
   }, []);
 
-  // Filter patients by search term
-  useEffect(() => {
-    if (searchTerm) {
-      const results = patients.filter(
-        (patient) =>
-          patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          patient.contactNumber.includes(searchTerm)
-      );
-      setFilteredPatients(results);
-    } else {
-      setFilteredPatients([]);
+  const fetchTreatmentRecords = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/treatmentRecord/list");
+      setTreatmentRecords(response.data);
+    } catch (error) {
+      console.error("Error fetching treatment records:", error);
     }
-  }, [searchTerm, patients]);
-
-  // Handle input changes
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
   };
 
-  // Handle form submission
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
+  const searchPatients = async (query) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/patient/searchPatient?query=${query}`
+      );
+      setPatients(response.data);
+    } catch (error) {
+      console.error("Error searching patients:", error);
+    }
+  };
 
+  const handleSearchChange = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    if (query.length > 2) {
+      searchPatients(query);
+    } else {
+      setPatients([]);
+    }
+  };
+
+  const handleFormChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     if (!selectedPatient) {
-      alert("Please select a patient from the list.");
+      alert("Please select a patient.");
       return;
     }
-
-    const recordToSubmit = {
-      ...formData,
-      patientId: selectedPatient.id,
-    };
-
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/treatment-records/add",
-        recordToSubmit
-      );
-      // Update the table with the newly created record
-      setSubmittedData((prevData) => [...prevData, response.data]);
+      if (isEditing) {
+        await axios.put(
+          `http://localhost:8080/treatmentRecord/update/${editRecordId}`,
+          { ...formData, patientId: selectedPatient.id }
+        );
+        alert("Treatment record updated successfully.");
+      } else {
+        await axios.post(
+          `http://localhost:8080/treatmentRecord/save?patientId=${selectedPatient.id}`,
+          formData
+        );
+        alert("Treatment record saved successfully.");
+      }
 
-      // Reset the form
+      fetchTreatmentRecords();
       setFormData({
         sicknessDescription: "",
         medicinePrescribed: "",
@@ -102,111 +93,184 @@ const DashboardPage = () => {
         progressNotes: "",
         treatmentAmount: "",
       });
-      setSearchTerm("");
+      setPatients([]);
+      setSearchQuery("");
+      setIsEditing(false);
+      setEditRecordId(null);
       setSelectedPatient(null);
     } catch (error) {
-      console.error("Error submitting treatment record:", error);
+      console.error("Error saving treatment record:", error);
+      alert("Error saving treatment record.");
     }
   };
 
-  // Handle dropdown selection
-  const handleDropdownClick = (patient) => {
-    setSelectedPatient(patient);
-    setSearchTerm(`${patient.name} (${patient.contactNumber})`);
-    setFilteredPatients([]);
+  const handleEdit = (record) => {
+    setFormData({
+      sicknessDescription: record.sicknessDescription,
+      medicinePrescribed: record.medicinePrescribed,
+      therapyGiven: record.therapyGiven,
+      treatmentDate: record.treatmentDate,
+      treatmentTime: record.treatmentTime,
+      progressNotes: record.progressNotes,
+      treatmentAmount: record.treatmentAmount,
+    });
+    setSelectedPatient(record.patient || null);
+    setIsEditing(true);
+    setEditRecordId(record.id);
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this record?")) {
+      try {
+        await axios.delete(`http://localhost:8080/treatmentRecord/delete/${id}`);
+        alert("Treatment record deleted successfully.");
+        fetchTreatmentRecords();
+      } catch (error) {
+        console.error("Error deleting treatment record:", error);
+        alert("Error deleting treatment record.");
+      }
+    }
   };
 
   return (
     <div className="dashboard-container">
       <Navbar />
       <div className="content">
+      <div className="top-section">
+        <div className="summary-cards">
+            <div className="card">
+              <i className="fas fa-users card-icon"></i>
+              <div>
+                <h3>Today Patients</h3>
+                <p>50</p>
+              </div>
+            </div>
+            <div className="card">
+              <i className="fas fa-dollar-sign card-icon"></i>
+              <div>
+                <h3>Today Payments</h3>
+                <p>2000</p>
+              </div>
+            </div>
+          </div>
+          <div className="actions-container">
+            <div className="search-container">
+              <input type="text" placeholder="Search" className="search-bar" />
+              <i className="fas fa-search search-icon"></i>
+            </div>
+            <button className="add-patient-btn" >
+              <i className="fas fa-user-plus"></i> Add New Patient
+            </button>
+          </div>
+          </div>
+
         <Sidebar />
         <div className="dashboard-content">
           <div className="layout-container">
             <div className="form-container">
-              <form onSubmit={handleFormSubmit}>
-                <h4 className="text-center mb-4">Treatment Record Form</h4>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Start typing Patient Name or Contact Number"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                {filteredPatients.length > 0 && (
-                  <ul className="dropdown-list">
-                    {filteredPatients.map((patient) => (
-                      <li
-                        key={patient.id}
-                        onClick={() => handleDropdownClick(patient)}
-                        className="dropdown-item"
-                      >
-                        {patient.name} ({patient.contactNumber})
-                      </li>
-                    ))}
-                  </ul>
-                )}
+              <h4 className="text-center mb-4">
+                {isEditing ? "Update Treatment Record" : "Treatment Record Form"}
+              </h4>
+              <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                  <label htmlFor="patientSearch">Search Patient (Name or Contact):</label>
+                  <input
+                    type="text"
+                    id="patientSearch"
+                    className="form-control"
+                    placeholder="Start typing Patient Name or Contact Number"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                  />
+                  {patients.length > 0 && (
+                    <ul className="list-group mt-2">
+                      {patients.map((patient) => (
+                        <li
+                          key={patient.id}
+                          className="list-group-item list-group-item-action"
+                          onClick={() => {
+                            setSelectedPatient(patient);
+                            setSearchQuery(patient.name);
+                            setPatients([]);
+                          }}
+                        >
+                          {patient.name} - {patient.contactNumber}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
                 <input
                   type="text"
                   name="sicknessDescription"
                   placeholder="Sickness Description"
+                  className="form-control mt-2"
                   value={formData.sicknessDescription}
-                  onChange={handleInputChange}
+                  onChange={handleFormChange}
                   required
                 />
                 <input
                   type="text"
                   name="medicinePrescribed"
                   placeholder="Medicine Prescribed"
+                  className="form-control mt-2"
                   value={formData.medicinePrescribed}
-                  onChange={handleInputChange}
+                  onChange={handleFormChange}
                   required
                 />
                 <input
                   type="text"
                   name="therapyGiven"
                   placeholder="Therapy Given"
+                  className="form-control mt-2"
                   value={formData.therapyGiven}
-                  onChange={handleInputChange}
+                  onChange={handleFormChange}
                   required
                 />
                 <input
                   type="date"
                   name="treatmentDate"
+                  className="form-control mt-2"
                   value={formData.treatmentDate}
-                  onChange={handleInputChange}
+                  onChange={handleFormChange}
                   required
                 />
                 <input
                   type="time"
                   name="treatmentTime"
+                  className="form-control mt-2"
                   value={formData.treatmentTime}
-                  onChange={handleInputChange}
+                  onChange={handleFormChange}
                   required
                 />
                 <input
                   type="text"
                   name="progressNotes"
                   placeholder="Progress Notes"
+                  className="form-control mt-2"
                   value={formData.progressNotes}
-                  onChange={handleInputChange}
+                  onChange={handleFormChange}
                   required
                 />
                 <input
                   type="number"
                   name="treatmentAmount"
                   placeholder="Treatment Amount"
+                  className="form-control mt-2"
                   value={formData.treatmentAmount}
-                  onChange={handleInputChange}
+                  onChange={handleFormChange}
                   required
                 />
-                <button type="submit" className="btn btn-primary">
-                  Submit
+                <div className="form-buttons">
+                <button type="submit" className="submit-btn">
+                  {isEditing ? "Update" : "Submit"}
                 </button>
+                </div>
               </form>
             </div>
-            <div className="patients-table">
-              <table className="table">
+            <div className="patients-table mt-3">
+              <h4>Treatment Records</h4>
+              <table className="table table-bordered">
                 <thead>
                   <tr>
                     <th>No</th>
@@ -215,19 +279,41 @@ const DashboardPage = () => {
                     <th>Time</th>
                     <th>Medicine Prescribed</th>
                     <th>Amount</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {submittedData.map((record, index) => (
-                    <tr key={index}>
+                  {treatmentRecords.map((record, index) => (
+                    <tr key={record.id}>
                       <td>{index + 1}</td>
-                      <td>{record.patient?.name || "Unknown"}</td>
+                      <td>{record.patient?.name }</td>
                       <td>{record.sicknessDescription}</td>
                       <td>{record.treatmentTime}</td>
                       <td>{record.medicinePrescribed}</td>
-                      <td>{record.treatmentAmount}</td>
+                      <td>Rs. {record.treatmentAmount}</td>
+                      <td>
+                        <button
+                          className="btn btn-sm btn-warning me-2"
+                          onClick={() => handleEdit(record)}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="btn btn-sm btn-danger"
+                          onClick={() => handleDelete(record.id)}
+                        >
+                          Delete
+                        </button>
+                      </td>
                     </tr>
                   ))}
+                  {treatmentRecords.length === 0 && (
+                    <tr>
+                      <td colSpan="7" className="text-center">
+                        No records found.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
