@@ -2,7 +2,6 @@ package com.odyssey.Ayurveda_Management.service;
 
 import com.odyssey.Ayurveda_Management.model.Patient;
 import com.odyssey.Ayurveda_Management.repository.PatientRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,35 +9,32 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class PatientServiceImpl implements PatientService{
+public class PatientServiceImpl implements PatientService {
 
-    private PatientRepository patientRepository;
+    // Autowired constructor
+    private final PatientRepository patientRepository;
 
     @Autowired
-    public PatientServiceImpl(PatientRepository thePatientRepository) {
-        patientRepository = thePatientRepository;
+    public PatientServiceImpl(PatientRepository thepatientRepository) {
+        this.patientRepository = thepatientRepository;
     }
 
-
+    @Override
+    public List<Patient> searchPatients(String query) {
+        return patientRepository.findByNameContainingIgnoreCaseOrContactNumberContainingIgnoreCase(query, query);
+    }
 
     @Override
-    public List<Patient> findAll() {
+    public List<Patient> findAll() { // Corrected the method name from findALL() to findAll()
         return patientRepository.findAll();
     }
 
     @Override
-    public Patient findById(int theId) {
-        Optional<Patient> result = patientRepository.findById(theId);
-
-        Patient thePatient = null;
-
-        if (result.isPresent()) {
-            thePatient = result.get();
-        } else {
-            throw new RuntimeException("Did not find Patient id " + theId);
-        }
-        return thePatient;
+    public Patient findById(int id) {
+        return patientRepository.findById(id).orElse(null);
     }
+
+
 
     @Override
     public void save(Patient thePatient) {
@@ -49,5 +45,4 @@ public class PatientServiceImpl implements PatientService{
     public void deleteById(int theId) {
         patientRepository.deleteById(theId);
     }
-
 }

@@ -1,4 +1,3 @@
-
 package com.odyssey.Ayurveda_Management.service;
 
 import com.odyssey.Ayurveda_Management.model.Staff;
@@ -16,7 +15,5 @@ public interface StaffService {
     void save(Staff theStaff);
 
     void deleteById(int theId);
-
-    List<Staff> findByNameContainingIgnoreCase(String name);
 
 }

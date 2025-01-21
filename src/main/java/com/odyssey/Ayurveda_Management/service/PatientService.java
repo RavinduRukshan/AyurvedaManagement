@@ -10,10 +10,15 @@ public interface PatientService {
 
     List<Patient> findAll();
 
-    Patient findById(int theId);
+    //Patient findById(Long theId);
+    Patient findById(int theid);
+
 
     void save(Patient thePatient);
 
     void deleteById(int theId);
+
+    // search by name or contact number
+    List<Patient> searchPatients(String query);
 
 }
