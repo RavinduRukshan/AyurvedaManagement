@@ -1,39 +1,60 @@
 package com.odyssey.Ayurveda_Management.controller;
 
+import com.odyssey.Ayurveda_Management.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
-@Controller
-@RequestMapping("/api")
+@RestController
+@RequestMapping
 public class LoginController {
 
-    @GetMapping("/loginPage")
-    public ResponseEntity<Map<String, String>> showLoginPage() {
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Login page requested.");
-        response.put("status", "success");
+    private UserService userService;
+    private BCryptPasswordEncoder passwordEncoder;
 
-        // Return response with HTTP 200 (OK)
-        return ResponseEntity.ok(response);
+    @Autowired
+    public LoginController(UserService userService, BCryptPasswordEncoder passwordEncoder) {
+        this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    @GetMapping("/access-denied")
-    public ResponseEntity<Map<String, String>> accessDenied() {
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Access denied.");
-        response.put("status", "error");
+    // try 01
+//    @PostMapping("/login")
+//    public String login(@RequestBody User user) {
+//        User existingUser = userService.findByUsername(user.getUsername());
+//        if (existingUser != null && passwordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
+//            return "login successful";
+//        } else {
+//            return "Invalid credentials";
+//        }
+//    }
 
-        // Return response with HTTP 403 (Forbidden)
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    // try 02
+//    @PostMapping("/login")
+//    public ResponseEntity<String> login(@RequestBody LoginRequest request) {
+//        User existingUser = userService.findByUsername(request.getUsername());
+//        if (existingUser != null && passwordEncoder.matches(request.getPassword(), existingUser.getPassword())) {
+//            return ResponseEntity.ok("Login Successful!");
+//        } else {
+//            return ResponseEntity.ok("Invalid credentials");
+//        }
+//    }
+
+    // try 03
+    @GetMapping("/login")
+    public ResponseEntity<String> login(
+            @RequestParam("username") String username,
+            @RequestParam("password") String password) {
+
+        // Example validation logic
+        if ("admin".equals(username) && "password".equals(password)) {
+            return ResponseEntity.ok("Login Successful!");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        }
     }
-
-
 
 }
 
