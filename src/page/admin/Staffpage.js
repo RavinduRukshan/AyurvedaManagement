@@ -13,6 +13,11 @@ const Staffpage = () => {
   // State hooks to manage various states of the component
   const [isCreatePopupOpen, setIsCreatePopupOpen] = useState(false); // Open/close state for the create popup
   const [isUpdatePopupOpen, setIsUpdatePopupOpen] = useState(false); // Open/close state for the update popup
+  const [errors, setErrors] = useState({
+    email: "",
+    contactNumber: "",
+  });
+  
   
   const [isProfilePopupOpen, setIsProfilePopupOpen] = useState(false);
   const [selectedStaff, setSelectedStaff] = useState(null); 
@@ -95,34 +100,62 @@ const Staffpage = () => {
   // Handle form submission (both create and update)
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+  
+    let valid = true;
+    let newErrors = {
+      email: "",
+      contactNumber: "",
+    };
+  
+    // Validate email format
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(stafsForm.email)) {
+      newErrors.email = "Invalid email format!";
+      valid = false;
+    }
+  
+    // Validate Sri Lankan contact number format
+    const contactNumberRegex = /^(?:\+94|0)(7[1-9][0-9]{7})$/;
+    if (!contactNumberRegex.test(stafsForm.contactNumber)) {
+      newErrors.contactNumber = "Invalid Sri Lankan contact number format!";
+      valid = false;
+    }
+  
+    setErrors(newErrors);
+  
+    // If validation fails, stop form submission
+    if (!valid) {
+      return;
+    }
+  
     try {
       let response;
       const formData = {
         ...stafsForm,
-        roleId: stafsForm.role.id, // Ensure roleId is passed correctly
-        dispensaryId: stafsForm.dispensary.id // Ensure dispensaryId is passed correctly
+        roleId: stafsForm.role.id,
+        dispensaryId: stafsForm.dispensary.id,
       };
-
+  
       // Check if the staff has an ID (update case)
       if (stafsForm.id) {
         response = await axios.put(`http://localhost:8080/staff/update/${stafsForm.id}`, formData, {
           headers: {
-            "Content-Type": "application/json"
-          }
+            "Content-Type": "application/json",
+          },
         });
       } else {
         // Otherwise, it's a create case
         response = await axios.post("http://localhost:8080/staff/save", formData, {
           headers: {
-            "Content-Type": "application/json"
-          }
+            "Content-Type": "application/json",
+          },
         });
       }
-
+  
       console.log(stafsForm.id ? "Staff updated:" : "Staff saved:", response.data);
       setIsCreatePopupOpen(false);
       setIsUpdatePopupOpen(false);
-      fetchStaff(); // Fetch updated staff list
+      fetchStaff();
       setStaffForm({
         id: "",
         name: "",
@@ -132,14 +165,14 @@ const Staffpage = () => {
         dispensary: "",
         status: "",
         address: "",
-        salary:"",
-        hireDate:""
+        salary: "",
+        hireDate: "",
       });
     } catch (error) {
       console.error(stafsForm.id ? "Error updating staff:" : "Error saving staff:", error);
     }
   };
-
+  
   // Open the create popup (reset form)
   const openCreatePopup = () => {
     setIsCreatePopupOpen(true);
@@ -309,23 +342,26 @@ const Staffpage = () => {
                 required
               />
 
-              <input
-                type="email"
-                name="email"
-                placeholder="Email"
-                value={stafsForm.email}
-                onChange={handleInputChange}
-                required
-              />
+<input
+  type="email"
+  name="email"
+  placeholder="Email"
+  value={stafsForm.email}
+  onChange={handleInputChange}
+  required
+/>
+{errors.email && <div className="error-message">{errors.email}</div>} {/* Display email error */}
 
-              <input
-                type="text"
-                name="contactNumber"
-                placeholder="Phone number"
-                value={stafsForm.contactNumber}
-                onChange={handleInputChange}
-                required
-              />
+<input
+  type="text"
+  name="contactNumber"
+  placeholder="Phone number"
+  value={stafsForm.contactNumber}
+  onChange={handleInputChange}
+  required
+/>
+{errors.contactNumber && <div className="error-message">{errors.contactNumber}</div>} {/* Display contact number error */}
+
 
               <input
                 type="number"

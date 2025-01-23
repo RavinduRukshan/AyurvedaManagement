@@ -72,6 +72,20 @@ const PatientsPage = () => {
       return;
     }
 
+    // Validate email format using a regular expression
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    if (!emailPattern.test(patientForm.email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    // Validate phone number format for Sri Lanka (starts with 07 followed by 8 digits)
+    const phonePattern = /^07\d{8}$/;
+    if (!phonePattern.test(patientForm.contactNumber)) {
+      setError("Please enter a valid Sri Lankan phone number.");
+      return;
+    }
+
     try {
       let response;
       if (patientForm.id) {
@@ -233,15 +247,14 @@ const PatientsPage = () => {
         </div>
       </div>
 
-    
       {/* Delete confirmation popup */}
       {isDeleteConfirmationOpen && (
-        <div className="patients-popup-overlay-delete" >
+        <div className="patients-popup-overlay-delete">
           <div className="patients-popup-content-delete" onClick={(e) => e.stopPropagation()}>
             <h3 className="delete-text">Are you sure you want to delete this?</h3>
             <div className="confirmation-buttons">
-              <button  className="btn-action btn-view" onClick={handleDelete}>Yes, Delete</button>
-              <button  className="btn-action btn-delete" onClick={cancelDelete}>Cancel</button>
+              <button className="btn-action btn-view" onClick={handleDelete}>Yes, Delete</button>
+              <button className="btn-action btn-delete" onClick={cancelDelete}>Cancel</button>
             </div>
           </div>
         </div>
@@ -249,10 +262,10 @@ const PatientsPage = () => {
 
       {/* Create Patient Popup */}
       {isCreatePopupOpen && (
-        <div className="patients-popup-overlay" >
+        <div className="patients-popup-overlay">
           <div className="patients-popup-content" onClick={(e) => e.stopPropagation()}>
             <h3>Patient Registration</h3>
-            {error && <div className="error-message">{error}</div>}
+            
 
             <form className="patients-popup-form" onSubmit={handleFormSubmit}>
               <input
@@ -290,6 +303,7 @@ const PatientsPage = () => {
                 placeholder="Phone Number"
                 required
               />
+              {error && <div className="error-message">{error}</div>}
               <input
                 type="email"
                 name="email"
@@ -328,10 +342,9 @@ const PatientsPage = () => {
               <button type="submit" className="patients-register-btn">
                 Register
               </button>
-              <button type="submit" onClick={closePopup} className="patient-close-btn">
+              <button type="button" onClick={closePopup} className="patient-close-btn">
                 Close
               </button>
-              
             </form>
           </div>
         </div>
@@ -339,7 +352,7 @@ const PatientsPage = () => {
 
       {/* Update Patient Popup */}
       {isUpdatePopupOpen && (
-        <div className="patients-popup-overlay" >
+        <div className="patients-popup-overlay">
           <div className="patients-popup-content" onClick={(e) => e.stopPropagation()}>
             <h3>Update Patient</h3>
             {error && <div className="error-message">{error}</div>}
@@ -418,7 +431,7 @@ const PatientsPage = () => {
               <button type="submit" className="patients-register-btn">
                 Update
               </button>
-              <button type="submit" onClick={closePopup} className="patient-close-btn">
+              <button type="button" onClick={closePopup} className="patient-close-btn">
                 Close
               </button>
             </form>

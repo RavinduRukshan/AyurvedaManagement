@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+//import { Link } from "react-router-dom";
 import Navbar from "../../components/templetes/Navbar";
 import Sidebar from "../../components/templetes/SideBar";
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -82,6 +82,17 @@ const UsersPage = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+
+    // Basic validation
+    if (!userForm.username || userForm.username.length < 3) {
+      setError("Username must be at least 3 characters long.");
+      return;
+    }
+
+    if (!userForm.password || userForm.password.length < 6) {
+      setError("Password must be at least 6 characters long.");
+      return;
+    }
 
     try {
       let response;
@@ -177,7 +188,6 @@ const UsersPage = () => {
       <Navbar />
       <div className="users-content">
         <div className="breadcrumbs">
-          <span>Home</span> / <span>Users</span>
         </div>
         <div className="users-top-section">
           <div className="users-actions-container">
@@ -194,7 +204,7 @@ const UsersPage = () => {
             </button>
           </div>
         </div>
-  
+
         <div className="users-main-content">
           <Sidebar />
           <div className="users-table-container">
@@ -219,7 +229,6 @@ const UsersPage = () => {
                     <td>{user.role.authority}</td>
                     <td>{user.status}</td>
                     <td>
-                      
                       <button
                         className="btn-action btn-delete"
                         onClick={() => openDeleteConfirmation(user.id)}
@@ -234,7 +243,7 @@ const UsersPage = () => {
           </div>
         </div>
       </div>
-  
+
       {/* Delete Confirmation Popup */}
       {isDeleteConfirmationOpen && (
         <div className="user-popup-overlay-delete">
@@ -247,7 +256,7 @@ const UsersPage = () => {
           </div>
         </div>
       )}
-  
+
       {/* Popup for User Registration */}
       {isRegisterPopupOpen && (
         <div className="users-popup-overlay">
@@ -256,8 +265,8 @@ const UsersPage = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <h3>User Registration</h3>
-            {error && <div className="error-message">{error}</div>}
-  
+            
+
             <form className="users-popup-form" onSubmit={handleFormSubmit}>
               {/* Staff Name Input */}
               <div className="staff-selector-container">
@@ -282,7 +291,7 @@ const UsersPage = () => {
                   </ul>
                 )}
               </div>
-  
+
               {/* Username Input */}
               <input
                 type="text"
@@ -292,7 +301,7 @@ const UsersPage = () => {
                 placeholder="User Name"
                 required
               />
-  
+
               {/* Password Input */}
               <input
                 type="password"
@@ -302,7 +311,8 @@ const UsersPage = () => {
                 placeholder="Password"
                 required
               />
-  
+              {error && <div className="error-message">{error}</div>}
+
               {/* Role Selection */}
               <select
                 name="role"
@@ -319,7 +329,7 @@ const UsersPage = () => {
                   </option>
                 ))}
               </select>
-  
+
               {/* Status Selection */}
               <select
                 name="status"
@@ -333,7 +343,7 @@ const UsersPage = () => {
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
               </select>
-  
+
               <button type="submit" className="users-register-btn">
                 Register
               </button>
@@ -344,7 +354,7 @@ const UsersPage = () => {
           </div>
         </div>
       )}
-  
+
       {/* Popup for User Update */}
       {isUpdatePopupOpen && (
         <div className="users-popup-overlay" onClick={closePopup}>
@@ -354,7 +364,7 @@ const UsersPage = () => {
           >
             <h3>Update User</h3>
             {error && <div className="error-message">{error}</div>}
-  
+
             <form className="users-popup-form" onSubmit={handleFormSubmit}>
               <input
                 type="text"
@@ -376,7 +386,7 @@ const UsersPage = () => {
                   ))}
                 </ul>
               )}
-  
+
               <input
                 type="text"
                 name="username"
@@ -385,9 +395,7 @@ const UsersPage = () => {
                 placeholder="User Name"
                 required
               />
-  
-              
-  
+
               <select
                 name="role"
                 value={userForm.role.id || ""}
@@ -403,7 +411,7 @@ const UsersPage = () => {
                   </option>
                 ))}
               </select>
-  
+
               <select
                 name="status"
                 value={userForm.status}
@@ -416,7 +424,7 @@ const UsersPage = () => {
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
               </select>
-  
+
               <button type="submit" className="users-update-btn">
                 Update User
               </button>
@@ -426,5 +434,6 @@ const UsersPage = () => {
       )}
     </div>
   );
-}
+};
+
 export default UsersPage;

@@ -352,6 +352,11 @@
   background-color: #b62e3b;
 }
 
+.error-text {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
 
 
 
