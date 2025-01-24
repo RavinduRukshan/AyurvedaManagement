@@ -7,6 +7,15 @@ import arrow from '../../assets/arrow.png';
 import "../../css//Navbar.css"; // Custom styling for the Staff page
 
 export default function Navbar() {
+
+  const handleLogout = async () => {
+    await fetch('/logout', {
+        method: 'POST',
+        credentials: 'include',
+    });
+    window.location.href = '/login';
+};
+
   return (
     <div>
       <nav
@@ -49,9 +58,16 @@ export default function Navbar() {
                       </a>
                     </li>
                     <li>
-                      <a className="dropdown-item" href="#logout">
+                      {/* <a className="dropdown-item" href="#logout">
                         Logout
-                      </a>
+                      </a> */}
+                      {/* Logout menu item with the logout function */}
+                      <button
+                        className="dropdown-item"
+                        onClick={handleLogout}
+                      >
+                        Logout
+                      </button>
                     </li>
                   </ul>
                 </div>

@@ -85,51 +85,51 @@
 
 
 import React, { useState } from 'react';
-import '../css/signin.css';
-import Footer from '../components/templetes/Footer';
-import Navbar from '../components/templetes/Navbar';
+import '../css/signin.css'; // Import your custom CSS styles
+import Footer from '../components/templetes/Footer'; // Footer component
+import Navbar from '../components/templetes/Navbar'; // Navbar component
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 
-import image from '../assets/login.png';
+import image from '../assets/login.png'; // Login image
 
-function Signin() {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState(null);
-
+function Login() {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [message, setMessage] = useState('');
+    const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const handleSignIn = async (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
 
         if (!username || !password) {
             setError("Username and password are required.");
+            toast.error("Please fill in all fields.");
             return;
         }
 
         try {
-            // Send HTTP POST request to backend with username and password
-            const response = await axios.post('/authenticate', {
-                username: username,
-                password: password
-            });
+            // Send HTTP POST request to the backend
+            const response = await axios.post('http://localhost:8080/login', { username, password });
+
+           
 
             // Handle successful login
-            if (response.data === "Authentication Successful!") {
-                toast.success("Sign in successful!");
-                setError(null);
+            if (response.data === "Login Successful!") {
+                toast.success("Login successful!");
+                setError('');
                 navigate("/admin-dashboard"); // Redirect to admin dashboard
             } else {
-                setError("Invalid username or password.");
-                toast.error("Login failed.");
+                setMessage('Invalid credentials');
             }
         } catch (error) {
-            // Handle error
-            setError("Login failed.");
-            toast.error("An error occurred.");
+            setMessage('Invalid credentials');
+            // Handle error response
+            toast.error("An error occurred while logging in.");
+            console.error("Login error:", error);
         }
     };
 
@@ -147,13 +147,19 @@ function Signin() {
                                     {error}
                                 </div>
                             )}
-                            <form onSubmit={handleSignIn}>
+                            {message && (
+                                <div className="alert alert-danger">
+                                    {message}
+                                </div>
+                            )}
+                            <form onSubmit={handleLogin}>
                                 <input
                                     type="text"
                                     name="username"
                                     placeholder="Username"
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
+                                    required
                                 />
                                 <input
                                     type="password"
@@ -161,13 +167,14 @@ function Signin() {
                                     placeholder="Password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
+                                    required
                                 />
                                 <a href="#forgot" className="forgot-link">Forgot password?</a>
-                                <button type="submit" className="signin-button">LOG IN</button>
+                                <button type="submit" className="signin-button">Login</button>
                             </form>
                         </div>
                         <div className="signin-image">
-                            <img src={image} alt="Meeting" />
+                            <img src={image} alt="Login" />
                         </div>
                     </div>
                 </main>
@@ -180,4 +187,4 @@ function Signin() {
     );
 }
 
-export default Signin;
+export default Login;

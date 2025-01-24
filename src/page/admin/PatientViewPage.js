@@ -1,25 +1,58 @@
-import React from "react";
+
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import Navbar from "../../components/templetes/Navbar";
 import Sidebar from "../../components/templetes/SideBar";
-import "../../css/admin/PatientViewPage.css"; 
+import "../../css/admin/PatientViewPage.css";
+import axios from 'axios';
 
 const PatientViewPage = () => {
-  const patientDetails = {
-    id: "001",
-    name: "John Doe",
-    age: 35,
-    address: "123 Main Street, Springfield",
-    phoneNumber: "123-456-7890",
-    email: "john.doe@example.com",
-    gender: "Male",
-    medicalHistory: "Diabetes, Hypertension",
-    registrationDate: "2025-01-10",
-  };
+  const [patientDetails, setPatientDetails] = useState({
+    id: '',
+    name: '',
+    age: '',
+    gender: '',
+    contactNumber: '',
+    email: '',
+    address: '',
+    medicalHistory: '',
+    notes: '',
+  });
 
-  const medicalRecords = [
-    { date: "2025-01-05", disease: "Flu", medicines: "Paracetamol", therapy: "Bed Rest" },
-    { date: "2025-01-12", disease: "Diabetes Checkup", medicines: "Metformin", therapy: "Diet Control" },
-  ];
+  const [medicalRecords, setMedicalRecords] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // const patientId = 123; // Replace this with a dynamic ID (e.g., from route params)
+  const { patientId } = useParams();
+
+  useEffect(() => {
+    const fetchPatientData = async () => {
+      try {
+        setLoading(true);
+
+        // Fetch patient details
+        const patientResponse = await axios.get(`http://localhost:8080/patient/${patientId}`);
+        setPatientDetails(patientResponse.data);
+
+        // Fetch medical records
+        const recordsResponse = await axios.get(`http://localhost:8080/patient/${patientId}/records`);
+        setMedicalRecords(recordsResponse.data);
+
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching patient data:', err);
+        setError('Failed to fetch patient data. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPatientData();
+  }, [patientId]);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <div className="patient-view-page-container">
@@ -30,7 +63,7 @@ const PatientViewPage = () => {
           <div className="breadcrumbs">
             <span>Home</span> / <span>Patients</span> / <span>{patientDetails.id}</span>
           </div>
-          <h2 className="patient-name">{patientDetails.name}</h2>
+          <h2 className="patient-name">{patientDetails.name}'s Profile</h2>
 
           <div className="patient-info">
             <div className="info-item">
@@ -40,22 +73,22 @@ const PatientViewPage = () => {
               <strong>Age:</strong> <span>{patientDetails.age}</span>
             </div>
             <div className="info-item">
-              <strong>Address:</strong> <span>{patientDetails.address}</span>
+              <strong>Gender:</strong> <span>{patientDetails.gender}</span>
             </div>
             <div className="info-item">
-              <strong>Phone Number:</strong> <span>{patientDetails.phoneNumber}</span>
+              <strong>Contact Number:</strong> <span>{patientDetails.contactNumber}</span>
             </div>
             <div className="info-item">
               <strong>Email:</strong> <span>{patientDetails.email}</span>
             </div>
             <div className="info-item">
-              <strong>Gender:</strong> <span>{patientDetails.gender}</span>
+              <strong>Address:</strong> <span>{patientDetails.address}</span>
             </div>
             <div className="info-item">
               <strong>Medical History:</strong> <span>{patientDetails.medicalHistory}</span>
             </div>
             <div className="info-item">
-              <strong>Registration Date:</strong> <span>{patientDetails.registrationDate}</span>
+              <strong>Notes:</strong> <span>{patientDetails.notes}</span>
             </div>
           </div>
 
@@ -72,10 +105,10 @@ const PatientViewPage = () => {
             <tbody>
               {medicalRecords.map((record, index) => (
                 <tr key={index}>
-                  <td>{record.date}</td>
-                  <td>{record.disease}</td>
-                  <td>{record.medicines}</td>
-                  <td>{record.therapy}</td>
+                  <td>{record.treatmentDate}</td>
+                  <td>{record.sicknessDescription}</td>
+                  <td>{record.medicinePrescribed}</td>
+                  <td>{record.therapyGiven}</td>
                 </tr>
               ))}
             </tbody>

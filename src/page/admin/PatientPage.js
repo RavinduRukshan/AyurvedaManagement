@@ -176,9 +176,11 @@ const PatientsPage = () => {
         {/* <div className="breadcrumbs">
           <span>Home</span> / <span>Patients</span>
         </div> */}
+        
         <div className="patients-top-section">
           <div className="patients-actions-container">
             <div className="patients-search-container">
+            
               <input
                 type="text"
                 placeholder="Search for patients"
@@ -213,7 +215,7 @@ const PatientsPage = () => {
                     <td>{patient.address}</td>
                     <td>
                       <Link
-                        to={`/PatientView-page/${patient.id}`}
+                        to={`/patient-view-page/${patient.id}`}
                         className="btn-action btn-view"
                       >
                         View
@@ -310,7 +312,6 @@ const PatientsPage = () => {
                 value={patientForm.medicalHistory}
                 onChange={handleInputChange}
                 placeholder="Medical History"
-                required
               ></textarea>
               <input
                 type="date"
@@ -400,7 +401,6 @@ const PatientsPage = () => {
                 value={patientForm.medicalHistory}
                 onChange={handleInputChange}
                 placeholder="Medical History"
-                required
               ></textarea>
               <input
                 type="date"

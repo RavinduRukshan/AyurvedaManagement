@@ -20,10 +20,10 @@ function App() {
         {/* Admin-Side Routes */}
         <Route path="/admin-dashboard" element={<AdminDashboard/>} />
         <Route path="/patient-page" element={<PatientsPage/>} />
-        <Route path="/patient-view-page" element={<PatientViewPage/>} />
+        <Route path="/patient-view-page/:id" element={<PatientViewPage />} />
         <Route path="/users-page" element={<UsersPage/>} />
         <Route path="/staff-page" element={<Staffpage/>} />
-    
+        
 
 
       </Routes>

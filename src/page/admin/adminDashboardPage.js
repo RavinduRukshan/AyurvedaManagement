@@ -436,7 +436,6 @@ const totalAmount = records.reduce((sum, record) => sum + parseFloat(record.trea
                         searchStaff(e.target.value); // Search staff by name
                       }}
                       placeholder="Staff Name"
-                      required
                     />
                     {staffOptions && staffOptions.length > 0 && (
                       <ul className="staff-options">
@@ -473,7 +472,6 @@ const totalAmount = records.reduce((sum, record) => sum + parseFloat(record.trea
                     value={form.medicinePrescribed}
                     onChange={handleInputChange}
                     placeholder="Medicine Prescribed"
-                    required
                   />
                   <input
                     type="text"
@@ -481,7 +479,6 @@ const totalAmount = records.reduce((sum, record) => sum + parseFloat(record.trea
                     value={form.therapyGiven}
                     onChange={handleInputChange}
                     placeholder="Therapy Given"
-                    required
                   />
                   <input
                     type="number"
@@ -500,7 +497,7 @@ const totalAmount = records.reduce((sum, record) => sum + parseFloat(record.trea
 
               {/* Left Side: Treatment record Table */}
               <div className="patients-table">
-                <h4>Daily Patients: 07/01/2025</h4>
+                <h4>Daily Patients: 24/1/2025 </h4>
                 <table>
                   <thead>
                     <tr>
@@ -520,7 +517,7 @@ const totalAmount = records.reduce((sum, record) => sum + parseFloat(record.trea
                         <td>{record.patient.name}</td>
                         
                         <td>{record.sicknessDescription}</td>
-                        <td>{record.medicinePrescribed ? ` Medicine : ${record.medicinePrescribed}` : ''}{record.therapyGiven ? ` Therapy : ${record.therapyGiven}` : ''}</td>
+                        <td>{record.medicinePrescribed ? ` Medicine : ${record.medicinePrescribed}` : ''}<br></br>{record.therapyGiven ? ` Therapy : ${record.therapyGiven}` : ''}</td>
                         {/* <td>{record.treatmentTime}</td> */}
                         
                         <td>{record.treatmentAmount}</td>
@@ -595,7 +592,6 @@ const totalAmount = records.reduce((sum, record) => sum + parseFloat(record.trea
                 value={patientForm.medicalHistory}
                 onChange={handleInputChangeP}
                 placeholder="Medical History"
-                required
               ></textarea>
               <input
                 type="date"
